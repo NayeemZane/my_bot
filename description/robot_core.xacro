@@ -91,9 +91,6 @@
         <material>Gazebo/Blue</material>
     </gazebo>
 
-
-
-
     <!-- RIGHT WHEEL LINK -->
 
     <joint name="right_wheel_joint" type="continuous">

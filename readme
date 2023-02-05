@@ -1,0 +1,93 @@
+cd 2w_ws/
+colcon build --symlink-install
+source install/setup.bash
+ros2 launch my_bot rsp.launch.py
+ros2 run joint_state_publisher_gui joint_state_publisher_gui
+
+rviz2 -d src/my_bot/config/view_bot.rviz
+ros2 launch my_bot rsp.launch.py use_sim_time:=true
+ros2 launch gazebo_ros gazebo.launch.py
+ros2 run gazebo_ros spawn_entity.py -topic robot_description -entity bot_name
+
+ros2 launch my_bot launch_sim.launch.py
+ros2 launch my_bot launch_sim.launch.py world:=./src/my_bot/worlds/testlayout.world
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+teleop_twist_joy -- teleop_node
+joy -- joy_node
+
+ECHO Command velocities: To check if the command velocities is coming through for the Gazebo to receive
+ros2 topic echo /cmd_vel
+
+
+SSH
+cd rt_ws/
+ssh robot@192.168.8.52
+Ros Lidar Driver: Sudo apt install ros-humble-rplidar-ros
+
+
+Setting parameters serial port, frame_id, angle_compensate, scan_mode
+cd..
+
+ros2 run rplidar_ros rplidar_composition --ros-args -p serials_port:=/dev/ttyUSB0 -p frame_id:=laser_frame -p angle_compensate:=true -p scan_mode:=Standard
+
+for serial port:
+cd ..
+ls /dev/serial/
+ls /dev/serial/by-id
+ls /dev/serial/by-id
+
+For Lidar:
+cd rt_ws/
+ros2 service call
+select empty message and give {}
+
+
+To Kill open new terminal
+killall rplidar_composition
+
+IMAGE:
+(Galactic has  compressed topics but not Humble)
+sudo apt install ros-humble-image-transport-plugins
+sudo apt install ros-humble-usb-cam
+cd 2w_ws/
+source /opt/ros/humble/setup.bash
+
+For both compressed & uncompressed views
+sudo apt install ros-humble-rqt-image-view
+ros2 run rqt_image_view rqt_image_view
+ros2 topic list
+
+For only compressed or only uncompressed topics for a given real camera:
+From one type to another
+
+ros2 run image_transport list_transports
+
+ros2 run image_transport republish raw compressed --ros-args -r in/raw:=/camera/image_raw/uncompressed -r out:=/camera/image_raw/compressed
+
+Working*
+ros2 run image_transport republish compressed raw --ros-args -r in/compressed:=/camera/image_raw/compressed -r out:=/camera/image_raw/uncompressed
+
+RBpi:
+sudo apt install librasberrypi-bin v4l-utils ros-humble-v4ls-camera
+groups
+
+if not:
+sudo usermod -aG video <username> (Then logout or reboot)
+
+Check connected camera:
+vcgencmd get_camera
+raspistill -k (Quit X+Enter)
+v4l2-ctl --list-devices
+sudo apt install ros-humble-image-transport-plugins
+sudo apt install ros-humble-rqt-image-view
+ros2 run v4l2_camera v4l2_camera_node --ros-args -p image_size:="[640,480]" -p camera_frame_id:camera_link_optical
+
+cd rt_ws/
+ros2 run rqt_image_view rqt_image_view
+
+
+Inside workspace Use launch file instead:
+pluma camera.launch.py
+ros2 launch camera.launch.py
+ros2 run rqt_image_view rqt_image_view
