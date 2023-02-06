@@ -23,7 +23,7 @@ ros2 topic echo /cmd_vel
 SSH
 cd rt_ws/
 ssh robot@192.168.8.52
-Ros Lidar Driver: Sudo apt install ros-humble-rplidar-ros
+Ros Lidar Driver: sudo apt install ros-humble-rplidar-ros
 
 
 Setting parameters serial port, frame_id, angle_compensate, scan_mode
@@ -91,3 +91,18 @@ Inside workspace Use launch file instead:
 pluma camera.launch.py
 ros2 launch camera.launch.py
 ros2 run rqt_image_view rqt_image_view
+
+
+JoyStick:
+sudo apt install joystick jstest-gtk evtest
+evtest
+select 3
+
+ros2 run joy
+ros2 run joy joy_enumerate_devices
+ros2 run joy joy_node
+ros2 topic echo /joy
+ros2 param list
+
+
+
